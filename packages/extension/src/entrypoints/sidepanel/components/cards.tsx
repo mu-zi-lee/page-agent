@@ -7,7 +7,9 @@ import type {
 	RetryEvent,
 } from '@page-agent/core'
 import {
+	Brain,
 	CheckCircle,
+	CircleCheck,
 	Eye,
 	Globe,
 	Keyboard,
@@ -15,11 +17,13 @@ import {
 	MoveVertical,
 	RefreshCw,
 	Sparkles,
+	Target,
 	XCircle,
 	Zap,
 } from 'lucide-react'
-import { Fragment, useState } from 'react'
+import { useState } from 'react'
 
+import { MarkdownText } from '@/components/ui/markdown'
 import { cn } from '@/lib/utils'
 
 // Result card for done action
@@ -54,29 +58,30 @@ function ResultCard({
 					Result: {success ? 'Success' : 'Failed'}
 				</span>
 			</div>
-			<p className="text-xs text-[11px] text-muted-foreground pl-5 whitespace-pre-wrap">{text}</p>
+			<MarkdownText content={text} compact className="pl-5 text-muted-foreground" />
 			{children}
 		</div>
 	)
 }
 
 // Single reflection item with truncation
-function ReflectionItem({ icon, value }: { icon: string; value: string }) {
+function ReflectionItem({ icon, value }: { icon: React.ReactNode; value: string }) {
 	const [expanded, setExpanded] = useState(false)
 
 	return (
-		<Fragment>
-			<span className="text-xs flex justify-center">{icon}</span>
-			<span
+		<>
+			<div className="flex justify-center text-muted-foreground">{icon}</div>
+			<button
+				type="button"
 				className={cn(
-					'text-[11px] text-muted-foreground cursor-pointer hover:text-muted-foreground/70',
+					'w-full text-left text-[11px] text-muted-foreground transition-colors hover:text-foreground/80 cursor-pointer',
 					!expanded && 'line-clamp-1'
 				)}
 				onClick={() => setExpanded(!expanded)}
 			>
-				{value}
-			</span>
-		</Fragment>
+				<MarkdownText content={value} compact className="text-inherit" />
+			</button>
+		</>
 	)
 }
 
@@ -91,9 +96,13 @@ function ReflectionSection({
 	}
 }) {
 	const items = [
-		{ icon: '☑️', label: 'eval', value: reflection.evaluation_previous_goal },
-		{ icon: '🧠', label: 'memory', value: reflection.memory },
-		{ icon: '🎯', label: 'goal', value: reflection.next_goal },
+		{
+			icon: <CircleCheck className="mt-0.5 size-3.5" />,
+			label: 'eval',
+			value: reflection.evaluation_previous_goal,
+		},
+		{ icon: <Brain className="mt-0.5 size-3.5" />, label: 'memory', value: reflection.memory },
+		{ icon: <Target className="mt-0.5 size-3.5" />, label: 'goal', value: reflection.next_goal },
 	].filter((item) => item.value)
 
 	if (items.length === 0) return null
@@ -243,17 +252,20 @@ function StepCard({ event }: { event: AgentStepEvent }) {
 							<p className="text-xs text-foreground/80 mb-0.5 wrap-anywhere break-all line-clamp-1 hover:line-clamp-none">
 								<span className="font-medium text-foreground/70">{event.action.name}</span>
 								{event.action.name !== 'done' && (
-									<span className="text-muted-foreground/70 ml-1.5">
+									<span className="ml-1.5 font-mono text-[11px] text-muted-foreground/70">
 										{JSON.stringify(event.action.input)}
 									</span>
 								)}
 							</p>
-							<p className="text-[11px] text-muted-foreground/70 grid grid-cols-[auto_1fr] gap-1.5">
-								<span className="">└</span>
-								<span className="wrap-anywhere break-all line-clamp-1 hover:line-clamp-3">
-									{event.action.output}
-								</span>
-							</p>
+							{event.action.output && (
+								<div className="mt-1 rounded-md border bg-background/60 p-2">
+									<MarkdownText
+										content={event.action.output}
+										compact
+										className="text-muted-foreground"
+									/>
+								</div>
+							)}
 						</div>
 					</div>
 				</div>
@@ -273,7 +285,11 @@ function ObservationCard({ event }: { event: ObservationEvent }) {
 			</div> */}
 			<div className="flex items-start gap-2">
 				<Eye className="size-3.5 text-green-500 shrink-0 mt-0.5" />
-				<span className="text-[11px] text-muted-foreground">{event.content}</span>
+				<MarkdownText
+					content={event.content}
+					compact
+					className="min-w-0 flex-1 text-muted-foreground"
+				/>
 			</div>
 		</div>
 	)
@@ -284,9 +300,12 @@ function RetryCard({ event }: { event: RetryEvent }) {
 		<div className="rounded-lg border border-amber-500/30 bg-amber-500/10 p-2.5">
 			<div className="flex items-start gap-1.5">
 				<RefreshCw className="size-3 text-amber-500 shrink-0 mt-0.5" />
-				<span className="text-xs text-amber-600 dark:text-amber-400">
-					{event.message} ({event.attempt}/{event.maxAttempts})
-				</span>
+				<div className="min-w-0 flex-1 text-amber-600 dark:text-amber-400">
+					<MarkdownText content={event.message} compact className="text-inherit" />
+					<div className="text-[10px] text-current/80">
+						Attempt {event.attempt} of {event.maxAttempts}
+					</div>
+				</div>
 			</div>
 		</div>
 	)
@@ -297,7 +316,7 @@ function ErrorCard({ event }: { event: AgentErrorEvent }) {
 		<div className="rounded-lg border border-destructive/30 bg-destructive/10 p-2.5">
 			<div className="flex items-start gap-1.5">
 				<XCircle className="size-3 text-destructive shrink-0 mt-0.5" />
-				<span className="text-xs text-destructive">{event.message}</span>
+				<MarkdownText content={event.message} compact className="min-w-0 flex-1 text-destructive" />
 			</div>
 			<RawSection rawResponse={event.rawResponse} />
 		</div>

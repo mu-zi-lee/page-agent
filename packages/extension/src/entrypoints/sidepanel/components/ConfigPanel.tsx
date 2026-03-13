@@ -1,4 +1,5 @@
 import {
+	Check,
 	ChevronDown,
 	Copy,
 	CornerUpLeft,
@@ -127,7 +128,7 @@ export function ConfigPanel({ config, onSave, onClose }: ConfigPanelProps) {
 							userAuthToken
 								? showToken
 									? userAuthToken
-									: `${userAuthToken.slice(0, 4)}${'•'.repeat(userAuthToken.length - 8)}${userAuthToken.slice(-4)}`
+									: `${userAuthToken.slice(0, 4)}${'*'.repeat(userAuthToken.length - 8)}${userAuthToken.slice(-4)}`
 								: 'Loading...'
 						}
 						className="text-xs h-8 font-mono bg-background"
@@ -148,7 +149,7 @@ export function ConfigPanel({ config, onSave, onClose }: ConfigPanelProps) {
 						onClick={handleCopyToken}
 						disabled={!userAuthToken}
 					>
-						{copied ? <span className="">✓</span> : <Copy className="size-3" />}
+						{copied ? <Check className="size-3" /> : <Copy className="size-3" />}
 					</Button>
 				</div>
 			</div>
@@ -329,7 +330,7 @@ export function ConfigPanel({ config, onSave, onClose }: ConfigPanelProps) {
 			{/* attribute */}
 			<div className="text-[10px] text-muted-foreground bg-background fixed bottom-0 w-full flex justify-around">
 				<span className="leading-loose">
-					Built with ♥️ by{' '}
+					Built by{' '}
 					<a
 						href="https://github.com/gaomeng1900"
 						target="_blank"

@@ -34,7 +34,7 @@ export function createTabTools(tabsController: TabsController): Record<string, T
 				try {
 					return await tabsController.openNewTab(url)
 				} catch (error) {
-					return `❌ Failed: ${error instanceof Error ? error.message : String(error)}`
+					return `Failed: ${error instanceof Error ? error.message : String(error)}`
 				}
 			},
 		},
@@ -50,7 +50,7 @@ export function createTabTools(tabsController: TabsController): Record<string, T
 				try {
 					return await tabsController.switchToTab(tab_id)
 				} catch (error) {
-					return `❌ Failed: ${error instanceof Error ? error.message : String(error)}`
+					return `Failed: ${error instanceof Error ? error.message : String(error)}`
 				}
 			},
 		},
@@ -66,7 +66,7 @@ export function createTabTools(tabsController: TabsController): Record<string, T
 				try {
 					return await tabsController.closeTab(tab_id)
 				} catch (error) {
-					return `❌ Failed: ${error instanceof Error ? error.message : String(error)}`
+					return `Failed: ${error instanceof Error ? error.message : String(error)}`
 				}
 			},
 		},

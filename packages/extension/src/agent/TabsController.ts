@@ -180,7 +180,7 @@ export class TabsController extends EventTarget {
 
 		await this.waitUntilTabLoaded(tabId)
 
-		return `✅ Opened new tab ID ${tabId} with URL ${url}`
+		return `Opened new tab ${tabId}: ${url}`
 	}
 
 	async switchToTab(tabId: number): Promise<string> {
@@ -193,7 +193,7 @@ export class TabsController extends EventTarget {
 
 		await this.updateCurrentTabId(tabId)
 
-		return `✅ Switched to tab ID ${tabId}.`
+		return `Switched to tab ${tabId}.`
 	}
 
 	async closeTab(tabId: number): Promise<string> {
@@ -224,7 +224,7 @@ export class TabsController extends EventTarget {
 				}
 			}
 
-			return `✅ Closed tab ID ${tabId}.`
+			return `Closed tab ${tabId}.`
 		} else {
 			throw new Error(`Failed to close tab ID ${tabId}: ${result.error}`)
 		}
@@ -265,7 +265,7 @@ export class TabsController extends EventTarget {
 		for (const tab of this.tabs) {
 			const { title, url } = await this.getTabInfo(tab.id)
 			summaries.push(
-				`| ${tab.id} | ${url} | ${title} | ${this.currentTabId === tab.id ? '✅' : ''} |`
+				`| ${tab.id} | ${url} | ${title} | ${this.currentTabId === tab.id ? 'Yes' : ''} |`
 			)
 		}
 		if (!this.tabs.length) {
